@@ -1,8 +1,11 @@
+//Dependencies
 dotenv = require("dotenv").config();
-const request = require("request")
+const Twitter = require("twitter");
+const Spotify = require("node-spotify-api");
+const request = require("request");
 const keys = require("./keys");
 
-//const spotify = new Spotify(keys.spotify);
+const spotify = new Spotify(keys.spotify);
 const client = new Twitter(keys.twitter);
 
 //process arg to take movie title 
@@ -16,7 +19,9 @@ const title = process.argv.slice(3).join("+");
 const movieThis = function() {
     request("http://www.omdbapi.com/?t=" + title + "&apikey=9cac7f7d", function(error, response, body) {
 
-        if (!error && response.statusCode === 200) {
+        if (err) {
+            return console.log('Error occurred: ' + err);
+        } else if (!error && response.statusCode === 200) {
 
             console.log(
                 "* Title: " + JSON.parse(body).Title + "\n" +
@@ -34,6 +39,52 @@ const movieThis = function() {
     });
 }
 
+//Get the first five songs that match the user's input
+const spotifyThisSong = function() {
+
+    spotify
+        .request(`https://api.spotify.com/v1/search?q=${title}&type=track&limit=5`)
+        .then(function(data) {
+            console.log(`/////////${data.tracks.items.length} Results//////////`)
+            data.tracks.items.forEach(function(element, index) {
+                console.log(
+                    "* Artist: " + data.tracks.items[index].artists[0].name + "\n" +
+                    "* Song Name: " + data.tracks.items[index].name + "\n" +
+                    "* Preview: " + data.tracks.items[index].preview_url + "\n" +
+                    "* Album: " + data.tracks.items[index].album.name + "\n"
+
+                );
+            });
+        })
+        .catch(function(err) {
+            console.error('Error occurred: ' + err);
+        });
+
+}
+
+//Make API call to display tweets and their time
+const myTweets = function() {
+
+    client.get('statuses/user_timeline', function(error, tweets, response) {
+        if (error) throw error;
+
+        tweets.forEach(function(element, index) {
+
+            console.log(
+                "* Tweet: " + element.text + "\n" +
+                "* Date : " + element.created_at + "\n"
+
+            );
+
+        });
+
+
+    });
+
+
+
+}
+
 
 
 //Hash table: call function based on request type
@@ -42,7 +93,9 @@ processCommand();
 function processCommand() {
     commands = {
 
-        "movie-this": movieThis
+        "movie-this": movieThis,
+        "spotify-this-song": spotifyThisSong,
+        "my-tweets": myTweets
 
     }
     commands[commandType]();

@@ -4,6 +4,7 @@ const Twitter = require("twitter");
 const Spotify = require("node-spotify-api");
 const request = require("request");
 const keys = require("./keys");
+const fs = require("fs");
 
 const spotify = new Spotify(keys.spotify);
 const client = new Twitter(keys.twitter);
@@ -12,15 +13,15 @@ const client = new Twitter(keys.twitter);
 const commandType = process.argv[2];
 
 
-const title = process.argv.slice(3).join("+");
+let title = process.argv.slice(3).join("+");
 
 
 //Make Omdb API call to get movie info based on movie the user provides
 const movieThis = function() {
     request("http://www.omdbapi.com/?t=" + title + "&apikey=9cac7f7d", function(error, response, body) {
 
-        if (err) {
-            return console.log('Error occurred: ' + err);
+        if (error) {
+            return console.log('Error occurred: ' + error);
         } else if (!error && response.statusCode === 200) {
 
             console.log(
@@ -80,7 +81,28 @@ const myTweets = function() {
 
 
     });
+}
 
+//Reads the content of the random.txt file and execute the spotify command in it
+const doWhatItSays = function() {
+
+    fs.readFile("random.txt", "utf8", function(error, data) {
+
+        //take data string and turn into array
+        let dataArray = data.split(",")
+
+        //set song title from text file, and remove quotes from title string
+        //set to global title variable for use with the Spotify API call
+        title = dataArray[1].replace(/"/g, "")
+
+        //set spotify command from text file
+        let spotifyCommand = dataArray[0]
+
+        //run spotifyThisSong. Function will use the newly defined title
+        spotifyThisSong();
+
+
+    })
 
 
 }
@@ -95,7 +117,8 @@ function processCommand() {
 
         "movie-this": movieThis,
         "spotify-this-song": spotifyThisSong,
-        "my-tweets": myTweets
+        "my-tweets": myTweets,
+        "do-what-it-says": doWhatItSays
 
     }
     commands[commandType]();

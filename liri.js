@@ -9,12 +9,17 @@ const fs = require("fs");
 const spotify = new Spotify(keys.spotify);
 const client = new Twitter(keys.twitter);
 
+
 //process arg to take movie title 
 const commandType = process.argv[2];
-
-
 let title = process.argv.slice(3).join("+");
 
+//Will be used to format object data for user display
+function displayObject(object) {
+    for (var key in object) {
+        console.log(key, object[key]);
+    }
+}
 
 //Make Omdb API call to get movie info based on movie the user provides
 const movieThis = function() {
@@ -24,17 +29,40 @@ const movieThis = function() {
             return console.log('Error occurred: ' + error);
         } else if (!error && response.statusCode === 200) {
 
-            console.log(
-                "* Title: " + JSON.parse(body).Title + "\n" +
-                "* Release Year: " + JSON.parse(body).Year + "\n" +
-                "* IMDB Rating: " + JSON.parse(body).imdbRating + "\n" +
-                "* Rotten Tomatoes Rating: " + JSON.parse(body).Ratings[1].Value + "\n" +
-                "* Country: " + JSON.parse(body).Country + "\n" +
-                "* Language: " + JSON.parse(body).Language + "\n" +
-                "* Plot: " + JSON.parse(body).Plot + "\n" +
-                "* Actors: " + JSON.parse(body).Actors + "\n"
-            );
+            //Store API data in object for ease of logging and organization
+            let resultsData = {
+                "Title: ": JSON.parse(body).Title,
+                "Release Year: ": JSON.parse(body).Year,
+                "IMDB Rating: ": JSON.parse(body).imdbRating,
+                "Rotten Tomatoes Rating: ": JSON.parse(body).Ratings[1].Value,
+                "Country: ": JSON.parse(body).Country,
+                "Language: ": JSON.parse(body).Language,
+                "Plot: ": JSON.parse(body).Plot,
+                "Actors: ": JSON.parse(body).Actors
 
+            }
+
+
+            //Display object contents to user
+            //Iterate over object and log each key, value pair
+            displayObject(resultsData);
+
+            //log data
+            logRequest("movies", resultsData);
+
+
+            /*
+                        console.log(
+                            "* Title: " + JSON.parse(body).Title + "\n" +
+                            "* Release Year: " + JSON.parse(body).Year + "\n" +
+                            "* IMDB Rating: " + JSON.parse(body).imdbRating + "\n" +
+                            "* Rotten Tomatoes Rating: " + JSON.parse(body).Ratings[1].Value + "\n" +
+                            "* Country: " + JSON.parse(body).Country + "\n" +
+                            "* Language: " + JSON.parse(body).Language + "\n" +
+                            "* Plot: " + JSON.parse(body).Plot + "\n" +
+                            "* Actors: " + JSON.parse(body).Actors + "\n"
+                        );
+            */
         }
 
     });
@@ -46,16 +74,48 @@ const spotifyThisSong = function() {
     spotify
         .request(`https://api.spotify.com/v1/search?q=${title}&type=track&limit=5`)
         .then(function(data) {
-            console.log(`/////////${data.tracks.items.length} Results//////////`)
-            data.tracks.items.forEach(function(element, index) {
-                console.log(
-                    "* Artist: " + data.tracks.items[index].artists[0].name + "\n" +
-                    "* Song Name: " + data.tracks.items[index].name + "\n" +
-                    "* Preview: " + data.tracks.items[index].preview_url + "\n" +
-                    "* Album: " + data.tracks.items[index].album.name + "\n"
 
-                );
+            //Map array based specific data keys
+            let resultsData = data.tracks.items.map(function(element, index) {
+
+                return {
+                    "Artist: ": data.tracks.items[index].artists[0].name,
+                    "Song Name: ": data.tracks.items[index].name,
+                    "Preview: ": data.tracks.items[index].preview_url,
+                    "Album: ": data.tracks.items[index].album.name
+                }
+
             });
+
+            //Console log data
+            resultsData.forEach(function(element) {
+
+                displayObject(element);
+                console.log("\n")
+
+            });
+
+            logRequest("spotify", resultsData);
+            //displayObject(resultsData);
+            /*
+                        {
+                            "Artist: ": data.tracks.items[index].artists[0].name,
+                            "Song Name: ": data.tracks.items[index].name,
+                            "Preview: ": data.tracks.items[index].preview_url,
+                            "Album: ": data.tracks.items[index].album.name
+                        }
+                        console.log(`/////////${data.tracks.items.length} Results//////////`)
+
+                        data.tracks.items.forEach(function(element, index) {
+                            console.log(
+                                "* Artist: " + data.tracks.items[index].artists[0].name + "\n" +
+                                "* Song Name: " + data.tracks.items[index].name + "\n" +
+                                "* Preview: " + data.tracks.items[index].preview_url + "\n" +
+                                "* Album: " + data.tracks.items[index].album.name + "\n"
+
+                            );
+                        });
+                    */
         })
         .catch(function(err) {
             console.error('Error occurred: ' + err);
@@ -113,7 +173,7 @@ const doWhatItSays = function() {
 processCommand();
 
 function processCommand() {
-    commands = {
+    let requests = {
 
         "movie-this": movieThis,
         "spotify-this-song": spotifyThisSong,
@@ -121,5 +181,53 @@ function processCommand() {
         "do-what-it-says": doWhatItSays
 
     }
-    commands[commandType]();
+    requests[commandType]();
+}
+
+/*log each request/command to a json file
+write method used over append 
+json file chosen over txt file for better data organization
+json file is organized by request type (e.g. movies)*/
+
+function logRequest(type, logData) {
+
+
+    //get contents of JSON file
+    fs.readFile("log.json", "utf8", function(error, data) {
+
+        if (error)
+
+            console.log(error);
+
+        //parse contents of file in memory to process log update
+        dataArray = JSON.parse(data);
+
+
+        //push request to variable object in memory
+        let newLogData = {
+
+            "request": title,
+            "data": logData
+
+        }
+
+        //push new log data to object array
+        dataArray.requests[type].push(newLogData);
+
+
+        //convert updated object to JSON string to be written to file
+        updatedJSON = JSON.stringify(dataArray);
+
+
+        //rewrite the json file with the updated object
+        fs.writeFile("log.json", updatedJSON, function(error) {
+
+            if (error) {
+
+                console.log(error);
+            }
+
+        });
+
+    });
 }

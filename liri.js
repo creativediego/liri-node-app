@@ -95,6 +95,7 @@ const spotifyThisSong = function() {
 
             });
 
+            //log request to JSON file
             logRequest("spotify", resultsData);
             //displayObject(resultsData);
             /*
@@ -129,16 +130,39 @@ const myTweets = function() {
     client.get('statuses/user_timeline', function(error, tweets, response) {
         if (error) throw error;
 
-        tweets.forEach(function(element, index) {
+        //Map array based specific data keys
+        let resultsData = tweets.map(function(element) {
 
-            console.log(
-                "* Tweet: " + element.text + "\n" +
-                "* Date : " + element.created_at + "\n"
+            return {
+                "Tweet: ": element.text,
+                "Text: ": element.created_at,
 
-            );
+            }
 
         });
 
+
+        //Console log data
+        resultsData.forEach(function(element) {
+
+            displayObject(element);
+            console.log("\n")
+
+        });
+
+        //Log request to JSON file
+        logRequest("tweets", resultsData);
+        /*
+                tweets.forEach(function(element, index) {
+
+                    console.log(
+                        "* Tweet: " + element.text + "\n" +
+                        "* Date : " + element.created_at + "\n"
+
+                    );
+
+                });
+        */
 
     });
 }
@@ -204,11 +228,22 @@ function logRequest(type, logData) {
 
 
         //push request to variable object in memory
-        let newLogData = {
+        let newLogData;
+        //If request is for tweets, the new object should be different
+        if (type !== "tweets") {
+            newLogData = {
 
-            "request": title,
-            "data": logData
+                "request": title,
+                "data": logData
 
+            }
+        } else {
+
+            newLogData = {
+
+                "data": logData
+
+            }
         }
 
         //push new log data to object array

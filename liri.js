@@ -26,7 +26,7 @@ const movieThis = function() {
     request("http://www.omdbapi.com/?t=" + title + "&apikey=9cac7f7d", function(error, response, body) {
 
         if (error) {
-            return console.log('Error occurred: ' + error);
+            console.log('Error occurred: ' + error);
         } else if (!error && response.statusCode === 200) {
 
             //Store API data in object for ease of logging and organization
@@ -251,7 +251,7 @@ function logRequest(type, logData) {
 
 
         //convert updated object to JSON string to be written to file
-        updatedJSON = JSON.stringify(dataArray);
+        updatedJSON = JSON.stringify(dataArray, null, 2);
 
 
         //rewrite the json file with the updated object

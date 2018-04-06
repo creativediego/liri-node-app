@@ -70,6 +70,41 @@
             "Album: ": "Lights And Sounds"
           }
         ]
+      },
+      {
+        "request": "I Want it That Way",
+        "data": [
+          {
+            "Artist: ": "Backstreet Boys",
+            "Song Name: ": "I Want It That Way",
+            "Preview: ": "https://p.scdn.co/mp3-preview/e72a05dc3f69c891e3390c3ceaa77fad02f6b5f6?cid=05137d9eaf2746d081bc86d4789be376",
+            "Album: ": "The Hits--Chapter One"
+          },
+          {
+            "Artist: ": "Backstreet Boys",
+            "Song Name: ": "I Want It That Way",
+            "Preview: ": "https://p.scdn.co/mp3-preview/f9f504a705fcaaf2f24b004b629725451014ad6c?cid=05137d9eaf2746d081bc86d4789be376",
+            "Album: ": "The Essential Backstreet Boys"
+          },
+          {
+            "Artist: ": "Backstreet Boys",
+            "Song Name: ": "I Want It That Way",
+            "Preview: ": "https://p.scdn.co/mp3-preview/b8c2410a5acb68b462be6ac85f1312430e2b149c?cid=05137d9eaf2746d081bc86d4789be376",
+            "Album: ": "Millennium"
+          },
+          {
+            "Artist: ": "Anthem Lights",
+            "Song Name: ": "I Want It That Way",
+            "Preview: ": "https://p.scdn.co/mp3-preview/4a163fbfa2dbbe4433f277e0e7395dca656364f5?cid=05137d9eaf2746d081bc86d4789be376",
+            "Album: ": "Covers Part IV"
+          },
+          {
+            "Artist: ": "Glee Cast",
+            "Song Name: ": "Bye Bye Bye / I Want It That Way (Glee Cast Version)",
+            "Preview: ": "https://p.scdn.co/mp3-preview/3aa63b5c98b98ae333e567813e5c720abb2914f0?cid=05137d9eaf2746d081bc86d4789be376",
+            "Album: ": "Bye Bye Bye / I Want It That Way (Glee Cast Version)"
+          }
+        ]
       }
     ],
     "movies": [

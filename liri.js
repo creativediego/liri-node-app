@@ -50,19 +50,6 @@ const movieThis = function() {
             //log data
             logRequest("movies", resultsData);
 
-
-            /*
-                        console.log(
-                            "* Title: " + JSON.parse(body).Title + "\n" +
-                            "* Release Year: " + JSON.parse(body).Year + "\n" +
-                            "* IMDB Rating: " + JSON.parse(body).imdbRating + "\n" +
-                            "* Rotten Tomatoes Rating: " + JSON.parse(body).Ratings[1].Value + "\n" +
-                            "* Country: " + JSON.parse(body).Country + "\n" +
-                            "* Language: " + JSON.parse(body).Language + "\n" +
-                            "* Plot: " + JSON.parse(body).Plot + "\n" +
-                            "* Actors: " + JSON.parse(body).Actors + "\n"
-                        );
-            */
         }
 
     });
@@ -97,26 +84,7 @@ const spotifyThisSong = function() {
 
             //log request to JSON file
             logRequest("spotify", resultsData);
-            //displayObject(resultsData);
-            /*
-                        {
-                            "Artist: ": data.tracks.items[index].artists[0].name,
-                            "Song Name: ": data.tracks.items[index].name,
-                            "Preview: ": data.tracks.items[index].preview_url,
-                            "Album: ": data.tracks.items[index].album.name
-                        }
-                        console.log(`/////////${data.tracks.items.length} Results//////////`)
 
-                        data.tracks.items.forEach(function(element, index) {
-                            console.log(
-                                "* Artist: " + data.tracks.items[index].artists[0].name + "\n" +
-                                "* Song Name: " + data.tracks.items[index].name + "\n" +
-                                "* Preview: " + data.tracks.items[index].preview_url + "\n" +
-                                "* Album: " + data.tracks.items[index].album.name + "\n"
-
-                            );
-                        });
-                    */
         })
         .catch(function(err) {
             console.error('Error occurred: ' + err);
@@ -152,17 +120,7 @@ const myTweets = function() {
 
         //Log request to JSON file
         logRequest("tweets", resultsData);
-        /*
-                tweets.forEach(function(element, index) {
 
-                    console.log(
-                        "* Tweet: " + element.text + "\n" +
-                        "* Date : " + element.created_at + "\n"
-
-                    );
-
-                });
-        */
 
     });
 }
